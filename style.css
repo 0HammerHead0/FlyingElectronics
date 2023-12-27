@@ -38,5 +38,33 @@ body {
   height: 100%;
   color: white;
   overflow: hidden;
-  z-index: 5;
+  z-index: -1;
+}
+#blob{
+  background-color:white;
+  opacity:0.5;
+  position: absolute;
+  aspect-ratio: 1;
+  height: 300px;
+  border-radius: 50%;
+  background:linear-gradient(
+    to right,
+    rgb(36, 104, 198) 0%, /* Starting color at 0% */
+    rgba(255, 65, 214, 0.984) 80% 
+  );
+  animation: rotate 7s infinite;
+  filter:blur(150px);
+  z-index:-2;
+}
+
+@keyframes rotate{
+  from{
+    rotate:0deg;
+  }
+  50% {
+    scale: 0.8 1;
+  }
+  to  {
+    rotate:360deg;
+  }
 }

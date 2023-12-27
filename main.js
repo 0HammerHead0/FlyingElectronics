@@ -18,7 +18,7 @@ const canvas = document.querySelector('.webgl');
 const OrbitControl = new OrbitControls(camera, canvas);
 OrbitControl.enableDamping = true;
 OrbitControl.minDistance = 0.45;
-const renderer = new THREE.WebGLRenderer({ canvas , alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, canvas:canvas , alpha: true });
 renderer.setSize(sizes.width, sizes.height);
 const axesHelper = new THREE.AxesHelper();
 camera.position.set(0 , 0, 0.7);
@@ -55,7 +55,7 @@ const rightLight = new THREE.DirectionalLight(0xffffff, 30);
 rightLight.position.set(20, 20, -10);
 scene.add(rightLight,leftLight);
 
-gui(rightLight, leftLight,renderer);
+gui(rightLight, leftLight);
 
 
 

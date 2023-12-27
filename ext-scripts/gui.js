@@ -1,6 +1,6 @@
 
 import * as dat from 'dat.gui';
-export function gui(rightLight, leftLight,renderer){
+export function gui(rightLight, leftLight){
     const gui = new dat.GUI();
     // Create an object to hold the light's properties for dat.GUI
     const rightLightProperties = {
@@ -49,16 +49,5 @@ export function gui(rightLight, leftLight,renderer){
     });
     leftFolder.add(leftLightProperties, 'positionZ', -20, 20).onChange((value) => {
     leftLight.position.z = value;
-    });
-    const rendererSettings = {
-        antialias: true, // Start with antialiasing enabled
-    };
-    
-    gui.add(rendererSettings, 'antialias').onChange((value) => {
-    if (value) {
-        renderer.antialias= true;
-    } else {
-        renderer.antialias= false;
-    }
     });
 }

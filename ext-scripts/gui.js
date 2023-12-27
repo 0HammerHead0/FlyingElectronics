@@ -1,6 +1,6 @@
 
 import * as dat from 'dat.gui';
-export function gui(rightLight, leftLight){
+export function gui(rightLight, leftLight, frontLight){
     const gui = new dat.GUI();
     // Create an object to hold the light's properties for dat.GUI
     const rightLightProperties = {
@@ -49,5 +49,30 @@ export function gui(rightLight, leftLight){
     });
     leftFolder.add(leftLightProperties, 'positionZ', -20, 20).onChange((value) => {
     leftLight.position.z = value;
+    });
+
+
+    const frontLightProperties = {
+        color: frontLight.color.getHex(),
+        intensity: frontLight.intensity,
+        positionX: frontLight.position.x,
+        positionY: frontLight.position.y,
+        positionZ: frontLight.position.z,
+    };
+    const frontFolder = gui.addFolder('Front Light Properties');
+    frontFolder.addColor(frontLightProperties, 'color').onChange((value) => {
+    frontLight.color.setHex(value);
+    });
+    frontFolder.add(frontLightProperties, 'intensity', 0, 100).onChange((value) => {
+        frontLight.intensity = value;
+    });
+    frontFolder.add(frontLightProperties, 'positionX', -20, 20).onChange((value) => {
+        frontLight.position.x = value;
+    });
+    frontFolder.add(frontLightProperties, 'positionY', -20, 20).onChange((value) => {
+        frontLight.position.y = value;
+    });
+    frontFolder.add(frontLightProperties, 'positionZ', -20, 20).onChange((value) => {
+        frontLight.position.z = value;
     });
 }

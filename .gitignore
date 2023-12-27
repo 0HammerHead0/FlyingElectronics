@@ -26,3 +26,8 @@ dist-ssr
 # other node modules
 
 node_modules
+
+
+
+# model files
+public/models

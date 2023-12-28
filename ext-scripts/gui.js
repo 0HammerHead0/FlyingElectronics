@@ -83,16 +83,16 @@ export function gui(rightLight, leftLight, frontLight, bias, far, near){
         frontLight.shadow.bias = value;
     });
     
-    biasFolder.add({ near: near }, 'near', 0, 50).onChange((value) => {
-        rightLight.shadow.camera.near = value;
-        leftLight.shadow.camera.near = value;
-        frontLight.shadow.camera.near = value;
-    });
+    // biasFolder.add({ near: near }, 'near', 0, 50).onChange((value) => {
+    //     rightLight.shadow.camera.near = value;
+    //     leftLight.shadow.camera.near = value;
+    //     frontLight.shadow.camera.near = value;
+    // });
     
-    biasFolder.add({ far: far }, 'far', 0, 500).onChange((value) => {
-        rightLight.shadow.camera.far = value;
-        leftLight.shadow.camera.far = value;
-        frontLight.shadow.camera.far = value;
-    });
+    // biasFolder.add({ far: far }, 'far', 0, 500).onChange((value) => {
+    //     rightLight.shadow.camera.far = value;
+    //     leftLight.shadow.camera.far = value;
+    //     frontLight.shadow.camera.far = value;
+    // });
     
 }

@@ -77,7 +77,7 @@ export function gui(rightLight, leftLight, frontLight, bias, far, near){
 
 
     const biasFolder = gui.addFolder('Shadow');
-    biasFolder.add({ bias: 0 }, 'bias', 0, 1).onChange((value) => {
+    biasFolder.add({ bias: 0 }, 'bias', -0.001, 0.001).onChange((value) => {
         rightLight.shadow.bias = value;
         leftLight.shadow.bias = value;
         frontLight.shadow.bias = value;

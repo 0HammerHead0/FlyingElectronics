@@ -59,10 +59,10 @@ gltfLoader.load(
         console.log('error', error);
     }
 );
-const shadowRes = 2048;
+const shadowRes = 10000;
 const  near = 0;
 const far = 500;
-const bias = 0.00;
+const bias = -0.0000;
 const leftLight = new THREE.DirectionalLight(0xffffff, 5);
 leftLight.position.set(-20, 20, 20);
 leftLight.castShadow = true;
@@ -74,7 +74,7 @@ leftLight.shadow.camera.far = far;
 scene.add(leftLight);
 
 const rightLight = new THREE.DirectionalLight(0xffffff, 8);
-rightLight.position.set(20, 20, -10);
+rightLight.position.set(20, 20, -20);
 rightLight.castShadow = true;
 rightLight.shadow.bias = bias;
 rightLight.shadow.mapSize.width = shadowRes;

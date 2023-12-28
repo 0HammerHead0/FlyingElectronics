@@ -64,7 +64,7 @@ var droneBoundingBox ;
 const shadowRes = 2048;
 const  near = 0;
 const far = 500;
-const bias = -0.0000;
+const bias = -0.00001;
 function initLight(light) {
     droneBoundingBox = new THREE.Box3().setFromObject(model); // Replace droneObject with your drone's Three.js object
     light.castShadow = true;
@@ -82,7 +82,7 @@ function initLight(light) {
 }
 
 
-const leftLight = new THREE.DirectionalLight(0xffffff, 5);
+const leftLight = new THREE.DirectionalLight(0xffffff, 10);
 leftLight.position.set(-20, 20, 20);
 
 

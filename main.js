@@ -46,9 +46,9 @@ gltfLoader.load(
           }
         });
         scene.add(model);
-        leftLight.target = model;
-        rightLight.target = model;
-        frontLight.target = model;
+        initLight(leftLight);
+        initLight(rightLight);
+        initLight(frontLight);
     },
     (xhr) => {
         const progress = (xhr.loaded / xhr.total).toFixed(2);
@@ -59,39 +59,38 @@ gltfLoader.load(
         console.log('error', error);
     }
 );
-const shadowRes = 10000;
+const droneBoundingSphere = new THREE.Sphere();
+var droneBoundingBox ;
+const shadowRes = 2048;
 const  near = 0;
 const far = 500;
 const bias = -0.0000;
+function initLight(light) {
+    droneBoundingBox = new THREE.Box3().setFromObject(model); // Replace droneObject with your drone's Three.js object
+    light.castShadow = true;
+    light.shadow.bias = bias;
+    light.shadow.mapSize.width = shadowRes;
+    light.shadow.mapSize.height = shadowRes;
+    light.shadow.camera.near = 1 // Adjust near to the size of your object
+    light.shadow.camera.far = 100 ;
+    light.shadow.camera.left = droneBoundingBox.min.x;
+    light.shadow.camera.right = droneBoundingBox.max.x;
+    light.shadow.camera.top = droneBoundingBox.max.y;
+    light.shadow.camera.bottom = droneBoundingBox.min.y;
+    light.target = model;
+    scene.add(light);
+}
+
+
 const leftLight = new THREE.DirectionalLight(0xffffff, 5);
 leftLight.position.set(-20, 20, 20);
-leftLight.castShadow = true;
-leftLight.shadow.bias = bias;
-leftLight.shadow.mapSize.width = shadowRes;
-leftLight.shadow.mapSize.height = shadowRes;
-leftLight.shadow.camera.near = near;
-leftLight.shadow.camera.far = far;
-scene.add(leftLight);
+
 
 const rightLight = new THREE.DirectionalLight(0xffffff, 8);
 rightLight.position.set(20, 20, -20);
-rightLight.castShadow = true;
-rightLight.shadow.bias = bias;
-rightLight.shadow.mapSize.width = shadowRes;
-rightLight.shadow.mapSize.height = shadowRes;
-rightLight.shadow.camera.near = near;
-rightLight.shadow.camera.far = far;
-scene.add(rightLight);
 
 const frontLight = new THREE.DirectionalLight(0xffffff, 10);
 frontLight.position.set(10,2,10);
-frontLight.castShadow = true;
-frontLight.shadow.bias = bias;
-frontLight.shadow.mapSize.width = shadowRes;
-frontLight.shadow.mapSize.height = shadowRes;
-frontLight.shadow.camera.near = near;
-frontLight.shadow.camera.far = far;
-scene.add(frontLight);
 
 
 gui(rightLight, leftLight,frontLight,bias,far,near);

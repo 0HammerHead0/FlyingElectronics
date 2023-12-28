@@ -24,6 +24,8 @@ OrbitControl.enableDamping = true;
 OrbitControl.minDistance = 0.45;
 const renderer = new THREE.WebGLRenderer({ antialias: true, canvas:canvas , alpha: true });
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.needsUpdate = true;
 renderer.setSize(sizes.width, sizes.height);
 const axesHelper = new THREE.AxesHelper();
 camera.position.set(0 , 0, 0.7);
@@ -57,45 +59,51 @@ gltfLoader.load(
         console.log('error', error);
     }
 );
-const shadowRes = 512;
-const  near = 0.5;
+const shadowRes = 10000;
+const  near = 0;
 const far = 500;
-const leftLight = new THREE.DirectionalLight(0xffffff, 10);
+const bias = -0.0000;
+const leftLight = new THREE.DirectionalLight(0xffffff, 5);
 leftLight.position.set(-20, 20, 20);
 leftLight.castShadow = true;
+leftLight.shadow.bias = bias;
 leftLight.shadow.mapSize.width = shadowRes;
 leftLight.shadow.mapSize.height = shadowRes;
 leftLight.shadow.camera.near = near;
 leftLight.shadow.camera.far = far;
+scene.add(leftLight);
 
 const rightLight = new THREE.DirectionalLight(0xffffff, 8);
-rightLight.position.set(20, 20, -10);
+rightLight.position.set(20, 20, -20);
 rightLight.castShadow = true;
+rightLight.shadow.bias = bias;
 rightLight.shadow.mapSize.width = shadowRes;
 rightLight.shadow.mapSize.height = shadowRes;
 rightLight.shadow.camera.near = near;
 rightLight.shadow.camera.far = far;
+scene.add(rightLight);
 
 const frontLight = new THREE.DirectionalLight(0xffffff, 10);
 frontLight.position.set(10,2,10);
 frontLight.castShadow = true;
+frontLight.shadow.bias = bias;
 frontLight.shadow.mapSize.width = shadowRes;
 frontLight.shadow.mapSize.height = shadowRes;
 frontLight.shadow.camera.near = near;
 frontLight.shadow.camera.far = far;
-scene.add(rightLight,leftLight,frontLight);
+scene.add(frontLight);
 
 
-gui(rightLight, leftLight,frontLight);
+gui(rightLight, leftLight,frontLight,bias,far,near);
 
 // post processign
-const composer = new EffectComposer(renderer);
-const renderPass = new RenderPass(scene, camera);
-composer.addPass(renderPass);
+// const composer = new EffectComposer(renderer);
+// const renderPass = new RenderPass(scene, camera);
+// composer.addPass(renderPass);
 
-const fxaaPass = new ShaderPass(FXAAShader);
-fxaaPass.uniforms['resolution'].value.set(1 / sizes.width, 1 / sizes.height);
-composer.addPass(fxaaPass);
+// const fxaaPass = new ShaderPass(FXAAShader);
+// fxaaPass.uniforms['resolution'].value.set(1 / sizes.width, 1 / sizes.height);
+// composer.addPass(fxaaPass);
 
 
 setupPosition();

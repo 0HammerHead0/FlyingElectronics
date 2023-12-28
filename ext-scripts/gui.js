@@ -1,6 +1,6 @@
 
 import * as dat from 'dat.gui';
-export function gui(rightLight, leftLight, frontLight){
+export function gui(rightLight, leftLight, frontLight, bias, far, near){
     const gui = new dat.GUI();
     // Create an object to hold the light's properties for dat.GUI
     const rightLightProperties = {
@@ -9,7 +9,6 @@ export function gui(rightLight, leftLight, frontLight){
         positionX: rightLight.position.x,
         positionY: rightLight.position.y,
         positionZ: rightLight.position.z,
-        // Add other properties you want to control
     };
     const rightFolder = gui.addFolder('Right Light Properties');
     rightFolder.addColor(rightLightProperties, 'color').onChange((value) => {
@@ -75,4 +74,25 @@ export function gui(rightLight, leftLight, frontLight){
     frontFolder.add(frontLightProperties, 'positionZ', -20, 20).onChange((value) => {
         frontLight.position.z = value;
     });
+
+
+    const biasFolder = gui.addFolder('Shadow');
+    biasFolder.add({ bias: 0 }, 'bias', 0, 1).onChange((value) => {
+        rightLight.shadow.bias = value;
+        leftLight.shadow.bias = value;
+        frontLight.shadow.bias = value;
+    });
+    
+    biasFolder.add({ near: near }, 'near', 0, 50).onChange((value) => {
+        rightLight.shadow.camera.near = value;
+        leftLight.shadow.camera.near = value;
+        frontLight.shadow.camera.near = value;
+    });
+    
+    biasFolder.add({ far: far }, 'far', 0, 500).onChange((value) => {
+        rightLight.shadow.camera.far = value;
+        leftLight.shadow.camera.far = value;
+        frontLight.shadow.camera.far = value;
+    });
+    
 }

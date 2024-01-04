@@ -1,2 +1,1 @@
 public/models/drone.glb filter=lfs diff=lfs merge=lfs -text
-dist/models/drone.glb filter=lfs diff=lfs merge=lfs -text

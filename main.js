@@ -1030,7 +1030,7 @@ function lightUp(ind){
         else{
             // gsap for opacity 0.5 and scale 1
             gsap.to(label,{
-                opacity:0.2,
+                opacity:0.45,
                 scale:1,
                 duration:0.05,
                 ease:"power2.inOut",

@@ -168,6 +168,7 @@ gltfLoader.load(
                 }
             }
         });
+        console.log(model.children[14].material);
         scene.add(model);
         initLight(leftLight);
         initLight(rightLight);
@@ -391,9 +392,9 @@ function createLine(vector, colorName) {
     scene.add(line);
 }
 
-function translucent(keyword,sectionNum){
+function translucent(keywords,sectionNum){
     modelLoadedPromise.then(() => {
-        if(keyword == 'none'){
+        if(keywords[0] == 'none'){
             model.traverse((child) => {
                 if (child.isMesh) {
                     const originalMaterial = child.material; // Save a reference to the original material
@@ -404,7 +405,7 @@ function translucent(keyword,sectionNum){
 
                     child.receiveShadow = true;
                     child.castShadow = true;
-
+                    
                     gsap.to(clonedMaterial, {
                         opacity:1,
                         duration: 0.8,
@@ -420,42 +421,31 @@ function translucent(keyword,sectionNum){
             });
             return;
         }
+        let opaqueMaterials = [];
         model.traverse((child) => {
             try{
                 if (child.isMesh) {
-                    if (child.name.startsWith(keyword)){
-                        const originalMaterial = child.material; // Save a reference to the original material
-                        const clonedMaterial = originalMaterial.clone(); // Clone the material
-                        clonedMaterial.opacity = 1; // Set opacity for the cloned material
-
-                        child.material = clonedMaterial; // Assign the cloned material to the object
-
+                    // console.log(keywords)
+                    // console.log(child.name.startsWith(keywords[0]),child.name)
+                    // console.log(child.name.startsWith(keywords[1]),child.name)
+                    if (child.name.startsWith(keywords[0] || child.name.startsWith(keywords[1]))){
+                        const originalMaterial = child.material;
+                        const clonedMaterial = originalMaterial.clone();
+                        child.material = clonedMaterial;
                         child.receiveShadow = true;
                         child.castShadow = true;
-
-                        gsap.to(clonedMaterial, {
-                            opacity:1,
-                            duration: 0.8,
-                            ease: "power2.out",
-                            onUpdate:()=>{
-                                if(globalActiveSection != sectionNum){
-                                    gsap.killTweensOf(child.material);
-                                    return;
-                                }
-                            }
-                        })
+                        opaqueMaterials.push([clonedMaterial,child.name]);
                     }
                     else{
                         const originalMaterial = child.material; // Save a reference to the original material
                         const clonedMaterial = originalMaterial.clone(); // Clone the material
-                        clonedMaterial.opacity = 1; // Set opacity for the cloned material
-
+                        
                         child.material = clonedMaterial; // Assign the cloned material to the object
                         // clonedMaterial.transparent = true; // Enable transparency in the material
                         // clonedMaterial.alphaTest = 0.05;
                         child.receiveShadow = false;
                         child.castShadow = false;
-
+                        
                         gsap.to(clonedMaterial, {
                             opacity:0.1,
                             duration: 0.8,
@@ -467,7 +457,6 @@ function translucent(keyword,sectionNum){
                                 }
                             }
                         })
-                    
                     }
                 }
             }
@@ -477,6 +466,48 @@ function translucent(keyword,sectionNum){
                 console.log(e);
             }
         });
+        console.log(opaqueMaterials)
+        opaqueMaterials.forEach((clonedMaterial) => {
+            gsap.to(clonedMaterial[0], {
+                opacity:1,
+                duration: 0.8,
+                ease: "power2.out",
+                onUpdate:()=>{
+                    if(globalActiveSection != sectionNum){
+                        gsap.killTweensOf(child.material);
+                        return;
+                    }
+                }
+            })
+        });
+        console.log(keywords)
+        if(keywords[1]=='antenna'){
+            console.log('updating antenna material')
+            const timeline = gsap.timeline();
+            timeline.to(model.children[14].children[0].material,{
+                opacity:1,
+                duration:0.8,
+                ease:"power2.out",
+                onUpdate:()=>{
+                    if(globalActiveSection != sectionNum){
+                        gsap.killTweensOf(child.material);
+                        return;
+                    }
+                }
+            })
+            timeline.to(model.children[14].children[1].material,{
+                opacity:1,
+                duration:0.8,
+                ease:"power2.out",
+                onUpdate:()=>{
+                    if(globalActiveSection != sectionNum){
+                        gsap.killTweensOf(child.material);
+                        return;
+                    }
+                }
+            })
+        }
+
     });
 }
 
@@ -514,7 +545,7 @@ function printCameraCoordinates(camera, orbitControl) {
         console.log(`Rotation - x: ${camera.rotation.x.toFixed(2)}, y: ${camera.rotation.y.toFixed(2)}, z: ${camera.rotation.z.toFixed(2)}`);
         // console.log(`Zoom - ${orbitControl.zoom.toFixed(2)}`);
         console.log(`Target - x: ${orbitControl.target.x.toFixed(2)}, y: ${orbitControl.target.y.toFixed(2)}, z: ${orbitControl.target.z.toFixed(2)}`);
-        console.log(`zoom - ${orbitControl.object.zoom.toFixed(2)}`)
+        console.log(`Model Position - x: ${model.position.x.toFixed(2)}, y: ${model.position.y.toFixed(2)}, z: ${model.position.z.toFixed(2)}`);
         // Add any other relevant properties here
         console.groupEnd();
     }
@@ -577,6 +608,7 @@ toggleBtn.addEventListener('click', () => {
                     ease: "power2.out",
                 })
             );
+            printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==2){
             printCameraCoordinates(camera, OrbitControl);
@@ -646,9 +678,7 @@ function debounce(func, delay) {
     };
 }
 function scrollToPage9(){
-    // camera Position - x: -0.26, y: -0.03, z: 0.25
-    // camera Rotation - x: 0.51, y: 0.36, z: -0.19
-    // orbitControl Target - x: -0.48, y: 0.26, z: -0.27
+    stopRotation = false;
     const timeline9 = gsap.timeline();
     timeline9.to(camera.position,{
         x: -0.55,
@@ -667,12 +697,21 @@ function scrollToPage9(){
         duration:1,
         ease:"power2.inOut"
     },0)
-    timeline9.add(translucent('camera',9),0)
+    timeline9.to(model.position,{
+        x: -0.47, y: 0.10, z: 0.00,
+        duration:1,
+        ease:"power2.inOut"
+    },0)
+    
+    timeline9.to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.inOut"
+    },0.1)
+    timeline9.add(translucent(['camera','none'],9),0)
 }
 function scrollToPage8(){
-    // Camera Position - x: -0.27, y: 0.24, z: -0.05
-    // Camera Rotation - x: 0.06, y: 0.75, z: -0.04
-    // OrbitControl Target - x: -0.48, y: 0.26, z: -0.27
+    stopRotation = false;
     const timeline = gsap.timeline();
     timeline.to(camera.position,{
         x: -0.28,
@@ -686,17 +725,29 @@ function scrollToPage8(){
         duration:1,
         ease:"power2.inOut"
     },0)
+    timeline.to(model.position,{
+        x: -0.47, y: 0.10, z: 0.00,
+        duration:1,
+        ease:"power2.inOut"
+    },0)
     timeline.to(OrbitControl.target,{
         x: -0.49, y: 0.28, z: -0.26,
         duration:1,
         ease:"power2.inOut"
     },0)
-    timeline.add(translucent('vtx',8),0)
+    
+    timeline.to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.inOut"
+    },0.1)
+    let temp = []
+    temp.push('vtx')
+    temp.push('antenna')
+    timeline.add(translucent(temp,8),0)
 }
 function scrollToPage7(){
-    // camera Position - x: -0.61, y: 0.21, z: 0.17
-    // camera Rotation - x: 0.94, y: -1.30, z: 0.93
-    // orbitcontrol Target - x: -0.39, y: 0.25, z: 0.13
+    stopRotation = false;
     const timeline = gsap.timeline();
     timeline.to(camera.position,{
         x: -0.61,
@@ -715,14 +766,21 @@ function scrollToPage7(){
         duration:1,
         ease:"power2.inOut"
     },0)
+    // Model Position - x: -0.47, y: 0.10, z: 0.00
+    timeline.to(model.position,{
+        x: -0.47, y: 0.10, z: 0.00,
+        duration:1,
+        ease:"power2.inOut"
+    },0)
     timeline.to(bottomLight,{
         intensity: 150,
         duration: 0.6,
         ease:"power2.inOut"
-    })
-    timeline.add(translucent('lipo',7),0)
+    },0.1)
+    timeline.add(translucent(['lipo','none'],7),0)
 }
 function scrollToPage6(){
+    stopRotation = false;
     const timeline = gsap.timeline();
     timeline.to(camera.position,{
         x: -0.40,
@@ -741,18 +799,24 @@ function scrollToPage6(){
         duration:1,
         ease:"power2.inOut"
     },0)
+    // Model Position - x: -0.47, y: 0.10, z: 0.00
+    timeline.to(model.position,{
+        x:-0.47,
+        y:0.1,
+        z:0,
+        duration:1,
+        ease:"power2.inOut",
+    },0)
     timeline.to(bottomLight,{
         intensity: 20,
         duration: 0.6,
         ease:"power2.inOut"
-    })
-    timeline.add(translucent('reciever',6),0)
+    },0.1)
+    timeline.add(translucent(['reciever','none'],6),0)
 
 }
 function scrollToPage5(){
-    // Camera Position - x: -0.31, y: 0.21, z: 0.07
-    // Camera Rotation - x: -0.66, y: 0.60, z: 0.41
-    // OrbitControl Target - x: -0.39, y: 0.14, z: -0.01
+    stopRotation = false;
     const moveAndRotate = gsap.timeline();
     moveAndRotate.to(camera.position, {
         x:-0.30,
@@ -776,14 +840,24 @@ function scrollToPage5(){
         ease: "power2.inOut",
         },0
     )
+    //Model Position - x: -0.47, y: 0.10, z: 0.00
+    moveAndRotate.to(model.position,{
+        x:-0.47,
+        y:0.1,
+        z:0,
+        duration:0.7,
+        ease:"power2.inOut",
+    },0)
+    
     moveAndRotate.to(bottomLight,{
-        intensity: 20,
+        intensity: 150,
         duration: 0.6,
         ease:"power2.inOut"
-    })
-    moveAndRotate.add(translucent('stk',5),0);
+    },0.1)
+    moveAndRotate.add(translucent(['stk','none'],5),0);
 }
 function scrollToPage4(){
+    stopRotation = false;
     const moveAndRotate = gsap.timeline();
     moveAndRotate.to(camera.position, {
         x:-0.2,
@@ -809,31 +883,38 @@ function scrollToPage4(){
         ease: "power2.inOut",
         },0
     )
-    moveAndRotate.add(translucent('prop',4),0)  
+    //Model Position - x: -0.47, y: 0.10, z: 0.00
+    moveAndRotate.to(model.position,{
+        x:-0.47,
+        y:0.1,
+        z:0,
+        duration:0.7,
+        ease:"power2.inOut",
+    },0)
+    
+    moveAndRotate.to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.inOut"
+    },0.1)
+    moveAndRotate.add(translucent(['prop','none'],4),0)  
 
 }
 function scrollToPage3(){
-    console.log(model.children[5].position)
-    console.log(model)
-    // console.log(motors[2].position)
-    // console.log(motors[2].position)
-    // console.log(motors[2].position)
-    // controlFlag = false;
+    stopRotation = false;
     const moveAndRotate = gsap.timeline();
+    moveAndRotate.to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.inOut"
+    },0.1)
     moveAndRotate.to(camera.position, {
         x:-0.16,
         y:0.29,
         z:0.01,
         duration: 1,
         ease: "power2.inOut",
-        onStart:()=>{
-            // camera.lookAt(model.children[5].position);
-        },
-        onUpdate: ()=>{
-            // camera.lookAt(model.children[5].position);
-        },
     },0)
-    // -0.20, y: 0.24, z: 0.05
     moveAndRotate.to(camera.rotation,{
         x : -0.40,
         y: 0.19,
@@ -841,10 +922,6 @@ function scrollToPage3(){
         duration:1,
         ease:"power2.inOut",
     },0)
-
-    // 0.3-0.22
-    // -0.14, y: 0.29, z: 0.07
-
     moveAndRotate.to(OrbitControl.target, {
         x:-0.20,
         y:0.21,
@@ -855,12 +932,13 @@ function scrollToPage3(){
     )
     moveAndRotate.to(model.position,{
         x:-0.47,
+        y:0.1,
+        z:0,
         duration:1,
         ease:"power2.inOut",
     },0)
-    moveAndRotate.add(translucent('motor00',3),0)
+    moveAndRotate.add(translucent(['motor00','none'],3),0)
 }
-let page2Scrolled = false;
 function scrollToPage2() {
     controlFlag=true;
     stopRotation = true;
@@ -872,7 +950,7 @@ function scrollToPage2() {
         z: 0.45,
         duration: 0.6,
         ease: "power2.inOut",
-        onComplete:translucent('frame',2),
+        onComplete:translucent(['frame','none'],2),
     },0.1)
     .to(OrbitControl.target, {
         x:0.5,
@@ -880,9 +958,6 @@ function scrollToPage2() {
         z:0,
         duration: 0.6,
         ease: "power2.inOut",
-        onComplete:()=>{
-            console.log(camera.rotation)
-        }
     },0.1)
     .to(model.position,{
         x:0,
@@ -891,7 +966,6 @@ function scrollToPage2() {
         duration:0.6,
         ease:"power2.inOut",
     },0.1)
-    //isEuler: true, _x: -0.4181381477973226, _y: -1.0189288510564705, _z: -0.36172840451767685
     .to(camera.rotation,{
         x : -0.418,
         y: -1.0189,
@@ -899,11 +973,13 @@ function scrollToPage2() {
         duration:0.6,
         ease:"power2.inOut",
     },0.1)
-    // moveAndRotate.add(translucent('frame'),0.5);
-    // if(hasTransitioned) page2Scrolled = false;
+    .to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.inOut"
+    },0.1)
     
 }
-let page1Scrolled = false;
 function scrollToPage1() {
     controlFlag=true;
     stopRotation = false;
@@ -915,18 +991,30 @@ function scrollToPage1() {
         duration: 0.6,
         ease: "power2.out",
     },0);
+    moveAndRotate.to(camera.rotation,{
+        x:0.2,
+        y:0,
+        z:0,
+        duration:0.6,
+        ease:"power2.out",
+    },0)
     moveAndRotate.to(OrbitControl.target, {
         x:0,
+        y:0.1,
+        z:0,
         duration: 0.6,
         ease: "power2.out",
     },0);
-    
-    translucent('none',1);
+    moveAndRotate.to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.inOut"
+    },0.1)
+    translucent(['none'],1);
 
     animateDrone();
     rotateProps();
 }
-let isScrolling = false;
 function lightUp(ind){
     const labels = document.querySelectorAll('.label');
     labels.forEach((label,index)=>{
@@ -1097,7 +1185,7 @@ function onClick(event) {
         const clickedObject = intersects[0].object;
 
         // Here you can check the clicked object's name or properties to perform specific actions
-        console.log('Clicked on a motor:', clickedObject.name);
+        console.log('Clicked on a child:' + clickedObject.name);
     }
 }
 
@@ -1158,7 +1246,9 @@ document.querySelector('.scroll-container').addEventListener('scroll', function(
   }
 });
 
-
+function scrollToSection(index) {
+    sections[index].scrollIntoView({ behavior: 'instant' });
+}
 // let scrollTimeout = false;
 function scrollTrigger(){
     const container = document.querySelector('.scroll-container');
@@ -1209,18 +1299,15 @@ function scrollTrigger(){
         });
     });
 };
-    // const snapPoints = 1 / (sections.length-1);
 
-    // ScrollTrigger.create({
-    //     scroller: container,
-    //     snap: {
-    //         snapTo: snapPoints,
-    //         duration: 0.5 // Adjust duration as needed
-    //     },
-    // });
-    // onSnapComplete: (scroll) => {
-    //     scrollTimeout = true;
-    //     setTimeout(() => {
-    //         scrollTimeout = false;
-    //     }, 500);
-    // }
+
+// -------------------------------------SCROLL PAGES TRANSITION END-------------------------
+
+//---------------------------------label animation-------------------------------------------
+
+const labels = document.querySelectorAll('.label');
+labels.forEach((label, index) => {
+    label.addEventListener('click', () => {
+        scrollToSection(index);
+    });
+});

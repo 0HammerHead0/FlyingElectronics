@@ -5,7 +5,8 @@ export function scrollBar(){
     const segLength = window.innerHeight / (bubbles.length + 1);
     bubbles.forEach((bubble,index)=> {
         bubble.style.top = `${(index+1)*segLength}px`;
-        labels[index].style.top = `${(index+1)*segLength - labels[index].offsetHeight/2}px`;
+        // labels[index].style.top = `${(index+1)*segLength - labels[index].offsetHeight/2}px`;
+        labels[index].style.top = `${(index+1)*segLength - labels[index].offsetHeight/4}px`;
     });
 
 }
@@ -42,50 +43,25 @@ export function bubbleTransition(globalActiveSection){
     // console.log(lowPercentage,midPercentage,highPercentage)
 
 
-    const bg = document.querySelector('.scrollBar__track__BG');
-    const bg_track = document.querySelector('.scrollBar__track');
-    const labels = document.querySelectorAll('.label');
-    let stay = false;
-    function showLabel(index){
-        stay = true;
-        labels.forEach((label,index)=> {
-            gsap.to(label.style, {
-                opacity: 1,
-                left:'10px',
-                duration: 0.1,
-                ease: "power1.out",
-                onUpdate: () => {
-                    stay = true;
-                }
-                // onComplete: () =>{
-                //     
-                // }
+    const tray = document.querySelector('.tray');
+    console.log(tray)
+    const duration = 0.8;
+    document.addEventListener('mousemove', function(e) {
+        let mouseX = e.clientX;
+        let width  = 60;
+        if( mouseX < width){
+            gsap.to(tray, {
+                left: '10px',
+                duration: duration,
+                ease: "power2.easeInOut",
             }, 0)
-        });
-    }
-    bg.addEventListener('mouseover',showLabel);
-    bg_track.addEventListener('mouseover',showLabel);
-    bg.addEventListener('mouseout',()=>{
-        console.log('out')
-        if(stay) return;
-        labels.forEach((label,index)=> {
-            const timeline = gsap.timeline();
-            timeline.to(label.style, {
-                opacity: 0,
-                left:'-50px',
-                duration: 0.1,
-                ease: "power1.out",
-                onUpdate: () => {
-                    if(stay){
-                        console.log('killed')
-                        timeline.kill();
-                        return;
-                    }
-                },
-                onComplete: () => {
-                    stay = false;
-                }
-            },0)
-        });
+        }
+        else{
+            gsap.to(tray, {
+                left: '-80px',
+                duration: duration,
+                ease: "power2.easeInOut",
+            }, 0)
+        }
     });
 }

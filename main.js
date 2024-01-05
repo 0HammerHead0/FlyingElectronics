@@ -257,7 +257,6 @@ const bottomLight = new THREE.DirectionalLight(0x404040 , 150);
 bottomLight.position.set(0,-30,0);
 
 
-// gui(rightLight, leftLight,frontLight,bias,far,near,OrbitControl,camera);
 var animationFlag = true;
 const propellerScene = new THREE.Scene();
 props.forEach((propeller) => {

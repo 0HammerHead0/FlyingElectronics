@@ -264,15 +264,14 @@ body {
   position: relative;
   text-align:right;
 }
-.BG-area:nth-child(odd){
-  background-color: #606c7d;
+.BG-area{
+  /* background-color: #606c7d; */
+  background: linear-gradient(
+    to top,
+    #6B728E 0%,
+    #404258 100% 
+  );
 }
-.BG-area:nth-child(even){
-  background-color:#1A1A1A;
-}
-
-
-
 /* .gui-container {
   position: absolute;
   top: 20px;
@@ -284,19 +283,20 @@ body {
   width: 60%!important;
 } */
 .tray{
-  left:-50px;
-  height:100%;
-  width:auto;
+  left:-10%;
+  height:100vh;
+  width:50px;
   z-index:8;
   position: fixed;
 }
 .label{
   color: white;
   max-width: 50px;
+  font-family: 'Red Hat Display', sans-serif;
   height: 30px;
   position:fixed;
-  /* left:-50px; */
   z-index: 8;
+  padding-left:10px;
   align-items: center;
   text-align: center;
   justify-content: center;
@@ -305,9 +305,31 @@ body {
 }
 .label:hover{
   transform: scale(1.1) !important;
-  opacity:0.95 !important;
+  opacity:1!important;
 }
 .label:active{
   transform: scale(0.95) !important;
   /* left:7px !important; */
 }
+
+
+
+.company-name{
+  position:fixed;
+  top: 60%;
+  font-family: 'Share Tech', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8rem;
+  justify-content: center;
+  line-height: 1;
+  display:flex;
+  overflow:hidden;
+  text-align: center;
+  cursor: default;
+  color:white;
+}
+/* .letter{
+  display: inline-block ;
+  position:relative ;
+  transform: translate(0px,0px);
+} */

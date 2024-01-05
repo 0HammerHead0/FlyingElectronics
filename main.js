@@ -7,6 +7,7 @@ import { attachScrollListener } from './ext-scripts/scroll.js';
 import { bubbleTransition } from './ext-scripts/scrollBar.js';
 import {scrollBar} from './ext-scripts/scrollBar.js';
 import { toggleState} from './ext-scripts/toggleState.js';
+import {name} from './ext-scripts/company-name.js';
 // import  {scrollTrigger} from './ext-scripts/scrollTrigger.js';
 import * as THREE from 'three';
 import  {gui} from './ext-scripts/gui.js';
@@ -20,6 +21,7 @@ import { BlendShader } from 'three/examples/jsm/shaders/BlendShader.js';
 import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js'; // Check the correct path
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import SplitText from 'gsap-trial/SplitText';
 
 gsap.registerPlugin(ScrollTrigger);
 scrollTrigger(ScrollTrigger);
@@ -89,7 +91,7 @@ var barFlag = true;
 let colors = ['#0000ff', '#3366ff', '#6699ff', '#99ccff', '#cceeff', '#ffccff', '#ff99ff'];
 function animateProgressBar() {
     if (!barFlag) return;
-
+    
     const innerBar = document.querySelector('.inner');
     
     // Create a temporary array that is one shifted from the original colors
@@ -98,9 +100,9 @@ function animateProgressBar() {
     colors = shiftedColors;
     // console.log(colors);
     const gradient = shiftedColors
-        .map((color, index) => `${color} ${(100 / shiftedColors.length) * index}%`)
-        .join(', ');
-
+    .map((color, index) => `${color} ${(100 / shiftedColors.length) * index}%`)
+    .join(', ');
+    
     innerBar.style.background = `linear-gradient(to right, ${gradient})`;
 }
 // animateProgressBar();
@@ -177,10 +179,15 @@ gltfLoader.load(
         model_loaded=true;
         // mouseEvents();
         const ldBarElement = document.querySelector('.ldBar');
-        gsap.to(ldBarElement, {opacity: 0, duration: 0.6, delay:0,ease: "power2.easeInOut"});
+        const t2 = gsap.timeline();
+        t2.to(ldBarElement,{
+            opacity: 0,
+            duration: 0.6,
+            delay:0,
+            ease: "power2.easeInOut",
+        });
         ldBarElement.style.zIndex = -10;
         barFlag = false;
-
     },
     (xhr) => {
         const progress = (xhr.loaded / xhr.total).toFixed(2);
@@ -205,6 +212,7 @@ const modelLoadedPromise = new Promise((resolve) => {
     };
     checkModelLoaded();
 });
+
 const droneBoundingSphere = new THREE.Sphere();
 var droneBoundingBox ;
 const shadowRes = 2048;
@@ -246,7 +254,7 @@ const frontLight = new THREE.DirectionalLight(0x404040 , 120);
 frontLight.position.set(20,20,20);
 
 const bottomLight = new THREE.DirectionalLight(0x404040 , 150);
-bottomLight.position.set(0,-30,-10);
+bottomLight.position.set(0,-30,0);
 
 
 // gui(rightLight, leftLight,frontLight,bias,far,near,OrbitControl,camera);
@@ -261,7 +269,9 @@ function animateDrone() {
         const moveAndRotate = gsap.timeline();
         moveAndRotate
         .to(model.position, {
+            x:0,
             y: 0.1,
+            z:0,
             duration: 1,
             // onComplete: animateCamera,
             ease: "power2.easeInOut",
@@ -280,7 +290,6 @@ function animateDrone() {
             onComplete:()=>{
                 // console.log(model.getWorldDirection(vector));
                 initialPose.copy(model.getWorldDirection(vector));
-                // createLine(initialPose, 'red');
             },
             onUpdate: ()=>{
                 if(globalActiveSection !=1){
@@ -311,7 +320,7 @@ function animateDrone() {
 const center = new THREE.Vector3();
 var stopRotation = false;
 function animateCamera() {
-    if(hasTransitioned && globalActiveSection == 1){
+    if(globalActiveSection == 1){
         const radius = 0.7;
         let theta = {value:0.0}
         stopRotation = false;
@@ -556,6 +565,35 @@ function printCameraCoordinates(camera, orbitControl) {
     // Initial display of camera coordinates
     updateCoordinates();
 }
+function compName_mouseScroll_appear(){
+    const mouseScroll = document.getElementById("mouseScroll");
+    const t2 = gsap.timeline();
+    const company_name = document.querySelector('.company-name');
+    t2.to(mouseScroll, {
+        opacity: 1,
+        duration: 0.5,
+        ease: "power2.inOut",
+    },0).to(company_name,{
+        opacity: 1,
+        duration: 0.6,
+        delay:0,
+        ease: "power2.inOut",
+    },0);
+}
+function compName_mouseScroll_disappear(){
+    const mouseScroll = document.getElementById("mouseScroll");
+    const t2 = gsap.timeline();
+    const company_name = document.querySelector('.company-name');
+    t2.to(mouseScroll, {
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.in",
+    },0).to(company_name,{
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.in",
+    },0);
+}
 let startTime = null;
 let revolutions = 0;
 const angularSpeed = 0.0085;
@@ -567,6 +605,7 @@ toggleBtn.addEventListener('click', () => {
     {   
         if(globalActiveSection == 1){
             scrollToPage1();
+            compName_mouseScroll_appear();
         }
         else if(globalActiveSection ==2){
             scrollToPage2();
@@ -608,31 +647,33 @@ toggleBtn.addEventListener('click', () => {
                     ease: "power2.out",
                 })
             );
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
+            compName_mouseScroll_disappear();
+
         }
         else if(globalActiveSection==2){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==3){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==4){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==5){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==6){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==7){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==8){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==9){
-            printCameraCoordinates(camera, OrbitControl);
+            // printCameraCoordinates(camera, OrbitControl);
         }
     }
 });
@@ -989,54 +1030,31 @@ function scrollToPage1() {
         y: 0,
         z:0.7,
         duration: 0.6,
-        ease: "power2.out",
+        ease: "power2.inOut",
     },0);
     moveAndRotate.to(camera.rotation,{
         x:0.2,
         y:0,
         z:0,
         duration:0.6,
-        ease:"power2.out",
+        ease:"power2.inOut",
     },0)
     moveAndRotate.to(OrbitControl.target, {
         x:0,
-        y:0.1,
+        y:0,
         z:0,
         duration: 0.6,
-        ease: "power2.out",
+        ease: "power2.inOut",
     },0);
     moveAndRotate.to(bottomLight,{
         intensity: 150,
         duration: 0.6,
         ease:"power2.inOut"
     },0.1)
-    translucent(['none'],1);
+    moveAndRotate.add(translucent(['none'],1),0.15);
 
-    animateDrone();
-    rotateProps();
-}
-function lightUp(ind){
-    const labels = document.querySelectorAll('.label');
-    labels.forEach((label,index)=>{
-        if(ind===index){
-            // gsap for opacity 1 and scale 1.2
-            gsap.to(label,{
-                opacity:1,
-                scale:1.2,
-                duration:0.05,
-                ease:"power2.inOut",
-            })
-        }
-        else{
-            // gsap for opacity 0.5 and scale 1
-            gsap.to(label,{
-                opacity:0.45,
-                scale:1,
-                duration:0.05,
-                ease:"power2.inOut",
-            })
-        }
-    })
+    moveAndRotate.add(animateDrone(),0.15);
+    moveAndRotate.add(rotateProps(),0.15);
 }
 const sections = document.querySelectorAll('.scroll-area');
 const observer = new IntersectionObserver((entries) => {
@@ -1048,44 +1066,53 @@ const observer = new IntersectionObserver((entries) => {
                 case 'page-1':
                     scrollToPage1();
                     lightUp(0);
+                    compName_mouseScroll_appear();
                     break;
                 case 'page-2':
                     scrollToPage2();
                     lightUp(1);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-3':
                     scrollToPage3();
                     lightUp(2);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-4':
                     scrollToPage4();
                     lightUp(3);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-5':
                     scrollToPage5();
                     lightUp(4);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-6':
                     scrollToPage6();
                     lightUp(5);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-7':
                     scrollToPage7();
                     lightUp(6);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-8':
                     scrollToPage8();
                     lightUp(7);
+                    compName_mouseScroll_disappear();
                     break;
                 case 'page-9':
                     scrollToPage9();
                     lightUp(8);
+                    compName_mouseScroll_disappear();
                     break;
-                // Add more cases for other sections as needed
-                default:
-                    break;
-            }
-        }
+                    // Add more cases for other sections as needed
+                    default:
+                        break;
+                    }
+                }
     });
 }, { threshold: 0.5 });
 
@@ -1106,60 +1133,44 @@ function easeOut(x){
 
 //----------------------------------------SCROLL HANDLING----------------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
+    const duration = 0.1 ;
+    const tray = document.querySelector('.tray');
+    const t1 = gsap.timeline();
     const sections = document.querySelectorAll('.scroll-area');
     if (sections.length > 0) {
         const scrollContainer = document.querySelector('.scroll-container');
         scrollContainer.addEventListener('scroll', function(e) {
-            // console.log(globalActiveSection, globalPrevSection);
-            hasTransitioned = false;
-            // console.log(e)
-            const scrollPos = Math.ceil(this.scrollTop);
-            let activeSection = 0;
-            sections.forEach((section, index) => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-                // console.log(section.id, section.offsetTop, section.offsetHeight , scrollPos)
-
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    activeSection = index + 1;
-                    hasTransitioned = scrollPos == sectionTop+1 || scrollPos == sectionTop - 1 || scrollPos == sectionTop;
-                    // console.log(scrollPos, sectionTop, hasTransitioned)
-                    // console.log(typeof(scrollPos), sectionTop, hasTransitioned)
-                }
-            });
-            // globalActiveSection = activeSection;
-            const isScrollingUp = scrollPos < lastScrollPos;
-            isTransitioningUp = isScrollingUp;
-            isTransitioningDown = !isScrollingUp;
-            lastScrollPos = scrollPos;
-            // console.log(isTransitioningUp, isTransitioningDown, activeSection,hasTransitioned)
-            // console.log( activeSection)
-            if(globalActiveSection == 1  && globalPrevSection == 2){
-                const mouseScroll = document.getElementById("mouseScroll");
-                gsap.to(mouseScroll, {
-                    opacity: 1,
-                    duration: 2,
-                    ease: "power2.easeInOut",
+            // gsap.to(tray, {
+            //     left: '0px',
+            //     duration: duration,
+            //     ease: "power2.out",
+            //     onComplete: ()=>{
+            //         console.log("heloo gsap here")
+            //         gsap.to(tray, {
+            //             left: '-10%',
+            //             duration: duration,
+            //             ease: "power2.in",
+            //         })
+            //     }
+            // })
+            clearTimeout(scrollTimeout);
+            if(!scrollByIndex){
+                gsap.to(tray, {
+                    left: '0px',
+                    duration: duration,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        scrollTimeout = setTimeout(() => {
+                            gsap.to(tray, {
+                                left: '-10%',
+                                duration: duration,
+                                ease: "power2.in",
+                            });
+                        }, 1000); // Delay before triggering the next animation
+                    }
                 });
             }
-            if(globalPrevSection == 1){
-                const mouseScroll = document.getElementById("mouseScroll");
-                gsap.to(mouseScroll, {
-                    opacity: 0,
-                    duration: 0.05,
-                    ease: "power2.easeInOut",
-                });
-            }
-            if( globalActiveSection !=1){
-                const mouseScroll = document.getElementById("mouseScroll");
-                gsap.to(mouseScroll, {
-                    opacity: 0,
-                    duration: 0.8,
-                    ease: "power2.easeIn",
-                });
-            }
-            // animate everything based on scrollPos
-
+            scrollByIndex = false;
             bubbleTransition(globalActiveSection);
         });
     }
@@ -1174,13 +1185,13 @@ function onClick(event) {
     // Calculate mouse position in normalized device coordinates
     mouse.x = (event.clientX / sizes.width) * 2 - 1;
     mouse.y = -(event.clientY / sizes.height) * 2 + 1;
-
+    
     // Update the picking ray with the camera and mouse position
     raycaster.setFromCamera(mouse, camera);
-
+    
     // Calculate objects intersecting the picking ray
     const intersects = raycaster.intersectObjects(model.children, true);
-
+    
     if (intersects.length > 0) {
         const clickedObject = intersects[0].object;
 
@@ -1204,7 +1215,7 @@ window.addEventListener("resize", () =>{
 });
 toggleState();
 syncScroll();
-
+name(modelLoadedPromise);
 const frameInterval = 1000 / 60;
 let lastRenderTime = 0;
 let frames = 0;
@@ -1230,23 +1241,28 @@ let lastScrollTime = 0;
 const scrollDelay = 5000; // Adjust the delay time as needed (in milliseconds)
 
 document.querySelector('.scroll-container').addEventListener('scroll', function(event) {
-  const currentTime = new Date().getTime();
-  if (currentTime - lastScrollTime > scrollDelay) {
-    // Allow snap scroll after the delay
+    const currentTime = new Date().getTime();
+    if (currentTime - lastScrollTime > scrollDelay) {
+        // Allow snap scroll after the delay
     lastScrollTime = currentTime;
     const currentScrollPos = this.scrollTop;
     const sectionHeight = this.clientHeight;
-
+    
     // Logic to scroll one section based on scroll direction
     const targetSection = Math.floor((currentScrollPos + sectionHeight / 2) / sectionHeight);
     this.scrollTo({
       top: targetSection * sectionHeight,
       behavior: 'smooth'
     });
-  }
+}
 });
-
+const mouseScroll = document.getElementById("mouseScroll");
+mouseScroll.addEventListener('click',()=>{
+    scrollToSection(1);
+});
+let scrollByIndex = false;
 function scrollToSection(index) {
+    scrollByIndex = true;
     sections[index].scrollIntoView({ behavior: 'instant' });
 }
 // let scrollTimeout = false;
@@ -1304,6 +1320,69 @@ function scrollTrigger(){
 // -------------------------------------SCROLL PAGES TRANSITION END-------------------------
 
 //---------------------------------label animation-------------------------------------------
+let activeLabel = 1;
+let scrollTimeout;
+const tray = document.querySelector('.tray');
+tray.addEventListener('wheel',(e)=>{
+    if(activeLabel !=1 && activeLabel != sections.length)
+        clearTimeout(scrollTimeout);
+    console.log(activeLabel)
+    if(e.deltaY>0){
+        // console.log("down>?")
+        if(activeLabel<sections.length){
+            activeLabel++;
+            // activeLabel=9;
+            console.log('active label',activeLabel)
+        }
+        else{
+            return;
+        }
+        lightUp(activeLabel-1);
+    }
+    else{
+        // console.log("up>?")
+        if(activeLabel>1){
+            activeLabel--;
+            console.log('active label',activeLabel)
+        }
+        else{
+            return;
+        }
+        lightUp(activeLabel-1);
+    }
+    scrollTimeout = setTimeout(() => {
+        scrollToSection(activeLabel - 1);
+    }, 800);
+});
+// setTimeout(()=>{
+//     scrollToSection(activeLabel-1);
+// },100)
+// scrollToSection(activeLabel);
+
+function lightUp(ind){
+    const labels = document.querySelectorAll('.label');
+    labels.forEach((label,index)=>{
+        if(ind===index){
+            // gsap for opacity 1 and scale 1.2
+            gsap.to(label,{
+                opacity:1,
+                scale:1.35,
+                duration:0.05,
+                ease:"power2.inOut",
+            })
+        }
+        else{
+            // gsap for opacity 0.5 and scale 1
+            gsap.to(label,{
+                opacity:0.45,
+                scale:1,
+                duration:0.05,
+                ease:"power2.inOut",
+            })
+        }
+    })
+}
+
 
 const labels = document.querySelectorAll('.label');
 labels.forEach((label, index) => {

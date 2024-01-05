@@ -596,6 +596,40 @@ function compName_mouseScroll_disappear(){
 let startTime = null;
 let revolutions = 0;
 const angularSpeed = 0.0085;
+function centerDrone(){
+    stopRotation = true;
+    const timeline1 = gsap.timeline({ duration: 0 })
+    .to(camera.position, {
+        x: 0,
+        y: 0,
+        z:0.5,
+        duration: 0.6,
+        ease: "power2.out",
+    },0).to(camera.rotation,{
+        x:0.2,
+        y:0,
+        z:0,
+        duration:0.6,
+        ease:"power2.out",
+    },0).to(OrbitControl.target, {
+        x:0,
+        y:0.1,
+        z:0,
+        duration: 0.6,
+        ease: "power2.out",
+    },0).to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.out"
+    },0.1)
+    .to(model.position,{
+        x:0,
+        y:0.1,
+        z:0,
+        duration:0.6,
+        ease:"power2.inOut",
+    },0.1)
+}
 const toggleBtn = document.getElementById('btn');
 toggleBtn.addEventListener('click', () => {
     animationFlag = !animationFlag;
@@ -634,21 +668,9 @@ toggleBtn.addEventListener('click', () => {
     }
     else{
         if(globalActiveSection ==1){
-            stopRotation = true;
-            const timeline1 = gsap.timeline({ duration: 0 });
-            timeline1.add(bringDown);
-            timeline1.add(
-                gsap.to(camera.position, {
-                    x:0,
-                    y:0,
-                    z: 0.5,
-                    duration: 0.5,
-                    ease: "power2.out",
-                })
-            );
+            centerDrone();
             // printCameraCoordinates(camera, OrbitControl);
             compName_mouseScroll_disappear();
-
         }
         else if(globalActiveSection==2){
             // printCameraCoordinates(camera, OrbitControl);
@@ -660,12 +682,15 @@ toggleBtn.addEventListener('click', () => {
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==5){
+            centerDrone();
+            
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==6){
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==7){
+            centerDrone();
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==8){

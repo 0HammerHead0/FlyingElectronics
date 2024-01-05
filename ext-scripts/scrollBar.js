@@ -44,23 +44,23 @@ export function bubbleTransition(globalActiveSection){
 
 
     const tray = document.querySelector('.tray');
-    console.log(tray)
+    // console.log(tray)
     const duration = 0.8;
     document.addEventListener('mousemove', function(e) {
         let mouseX = e.clientX;
         let width  = 60;
         if( mouseX < width){
             gsap.to(tray, {
-                left: '10px',
+                left: '0px',
                 duration: duration,
-                ease: "power2.easeInOut",
+                ease: "power2.out",
             }, 0)
         }
         else{
             gsap.to(tray, {
-                left: '-80px',
+                left: '-10%',
                 duration: duration,
-                ease: "power2.easeInOut",
+                ease: "power2.in",
             }, 0)
         }
     });

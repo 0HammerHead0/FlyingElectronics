@@ -570,13 +570,13 @@ function compName_mouseScroll_appear(){
     const company_name = document.querySelector('.company-name');
     t2.to(mouseScroll, {
         opacity: 1,
-        duration: 0.5,
-        ease: "power2.inOut",
+        duration: 0.3,
+        ease: "power2.out",
     },0).to(company_name,{
         opacity: 1,
-        duration: 0.6,
+        duration: 0.3,
         delay:0,
-        ease: "power2.inOut",
+        ease: "power2.out",
     },0);
 }
 function compName_mouseScroll_disappear(){
@@ -585,17 +585,51 @@ function compName_mouseScroll_disappear(){
     const company_name = document.querySelector('.company-name');
     t2.to(mouseScroll, {
         opacity: 0,
-        duration: 0.4,
+        duration: 0.3,
         ease: "power2.in",
     },0).to(company_name,{
         opacity: 0,
-        duration: 0.4,
+        duration: 0.3,
         ease: "power2.in",
     },0);
 }
 let startTime = null;
 let revolutions = 0;
 const angularSpeed = 0.0085;
+function centerDrone(){
+    stopRotation = true;
+    const timeline1 = gsap.timeline({ duration: 0 })
+    .to(camera.position, {
+        x: 0,
+        y: 0,
+        z:0.5,
+        duration: 0.6,
+        ease: "power2.out",
+    },0).to(camera.rotation,{
+        x:0.2,
+        y:0,
+        z:0,
+        duration:0.6,
+        ease:"power2.out",
+    },0).to(OrbitControl.target, {
+        x:0,
+        y:0.1,
+        z:0,
+        duration: 0.6,
+        ease: "power2.out",
+    },0).to(bottomLight,{
+        intensity: 150,
+        duration: 0.6,
+        ease:"power2.out"
+    },0.1)
+    .to(model.position,{
+        x:0,
+        y:0.1,
+        z:0,
+        duration:0.6,
+        ease:"power2.inOut",
+    },0.1)
+}
 const toggleBtn = document.getElementById('btn');
 toggleBtn.addEventListener('click', () => {
     animationFlag = !animationFlag;
@@ -634,21 +668,9 @@ toggleBtn.addEventListener('click', () => {
     }
     else{
         if(globalActiveSection ==1){
-            stopRotation = true;
-            const timeline1 = gsap.timeline({ duration: 0 });
-            timeline1.add(bringDown);
-            timeline1.add(
-                gsap.to(camera.position, {
-                    x:0,
-                    y:0,
-                    z: 0.5,
-                    duration: 0.5,
-                    ease: "power2.out",
-                })
-            );
+            centerDrone();
             // printCameraCoordinates(camera, OrbitControl);
             compName_mouseScroll_disappear();
-
         }
         else if(globalActiveSection==2){
             // printCameraCoordinates(camera, OrbitControl);
@@ -660,12 +682,15 @@ toggleBtn.addEventListener('click', () => {
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==5){
+            centerDrone();
+            
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==6){
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==7){
+            centerDrone();
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==8){
@@ -1139,19 +1164,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sections.length > 0) {
         const scrollContainer = document.querySelector('.scroll-container');
         scrollContainer.addEventListener('scroll', function(e) {
-            // gsap.to(tray, {
-            //     left: '0px',
-            //     duration: duration,
-            //     ease: "power2.out",
-            //     onComplete: ()=>{
-            //         console.log("heloo gsap here")
-            //         gsap.to(tray, {
-            //             left: '-10%',
-            //             duration: duration,
-            //             ease: "power2.in",
-            //         })
-            //     }
-            // })
             clearTimeout(scrollTimeout);
             if(!scrollByIndex){
                 gsap.to(tray, {
@@ -1165,7 +1177,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 duration: duration,
                                 ease: "power2.in",
                             });
-                        }, 1000); // Delay before triggering the next animation
+                        }, 1000);
                     }
                 });
             }
@@ -1178,9 +1190,10 @@ document.addEventListener('DOMContentLoaded', function() {
 //----------------------------------------SCROLL HANDLING END----------------------------------------------
 
 //----------------------------------------RayCasting----------------------------------------------
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
 function onClick(event) {
+    if(globalActiveSection !=1) return;
+    var raycaster = new THREE.Raycaster();
+    var mouse = new THREE.Vector2();
     // Calculate mouse position in normalized device coordinates
     mouse.x = (event.clientX / sizes.width) * 2 - 1;
     mouse.y = -(event.clientY / sizes.height) * 2 + 1;
@@ -1193,8 +1206,6 @@ function onClick(event) {
     
     if (intersects.length > 0) {
         const clickedObject = intersects[0].object;
-
-        // Here you can check the clicked object's name or properties to perform specific actions
         console.log('Clicked on a child:' + clickedObject.name);
     }
 }
@@ -1295,12 +1306,14 @@ function scrollTrigger(){
                 const sectionId = section.id;
                 // console.log("Section entered:",sectionId);
                 globalActiveSection = index+1;
+                activeLabel = index+1;
                 // console.log(globalActiveSection);
                 // animate
             },
             onLeaveBack: () => {
                 const sectionId = section.id;
                 globalPrevSection = index+1;
+                activeLabel = index+1;
                 // console.log("Section left:",sectionId);
             },
         });

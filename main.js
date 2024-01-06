@@ -243,7 +243,6 @@ function initLight(light) {
         scene.add(light);
     }
 }
-
 const leftLight = new THREE.DirectionalLight(0x404040 , 150);
 leftLight.position.set(-20, 20, 20);
 

@@ -3,10 +3,10 @@ export function favicon(){
     console.log(favicon)
     const toggleFavicon = (event) => {
         if (event.matches) {
-            favicon.href  = "./public/light-favicon.ico"
+            favicon.href  = "/light-favicon.ico"
         }
         else {
-            favicon.href = "./public/dark-favicon.ico"
+            favicon.href = "/dark-favicon.ico"
         }
     };
 

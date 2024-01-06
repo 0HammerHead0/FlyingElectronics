@@ -8,6 +8,7 @@ import { bubbleTransition } from './ext-scripts/scrollBar.js';
 import {scrollBar} from './ext-scripts/scrollBar.js';
 import { toggleState} from './ext-scripts/toggleState.js';
 import {name} from './ext-scripts/company-name.js';
+import {favicon} from './ext-scripts/favicon.js'; 
 // import  {scrollTrigger} from './ext-scripts/scrollTrigger.js';
 import * as THREE from 'three';
 import  {gui} from './ext-scripts/gui.js';
@@ -1156,6 +1157,7 @@ function easeOut(x){
 
 //----------------------------------------SCROLL HANDLING----------------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
+    favicon();
     const duration = 0.1 ;
     const tray = document.querySelector('.tray');
     const t1 = gsap.timeline();

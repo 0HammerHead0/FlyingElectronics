@@ -266,10 +266,14 @@ body {
 }
 .BG-area{
   /* background-color: #606c7d; */
-  background: linear-gradient(
-    to top,
+  background: radial-gradient(
+    /* inwards */
+    /* #6B728E 0%,
+    #404258 100%  */
+    /* outwards */
     #6B728E 0%,
-    #404258 100% 
+    #2f3141 100%
+
   );
 }
 /* .gui-container {
@@ -319,20 +323,110 @@ body {
   top: 60%;
   font-family: 'Share Tech', sans-serif;
   font-family: 'IBM Plex Mono', monospace;
+  font-family: 'Tektur', sans-serif;
   font-size: 8rem;
   justify-content: center;
-  line-height: 1.5;
+  line-height: 1;
   display:flex;
   overflow:hidden;
   text-align: center;
   cursor: default;
   color:white;
-  text-shadow: 0px 1rem 1.5rem rgba(0, 0, 0, 0.666);
+  text-shadow: 0px 0.5rem 0.8rem rgba(0, 0, 0, 0.666);
   padding-left:2%;
   padding-right:2%;
 }
-/* .letter{
-  display: inline-block ;
-  position:relative ;
-  transform: translate(0px,0px);
-} */
+
+.contacts{
+  position:absolute;
+  bottom: 7%;
+  width:100vw;
+  height: 3.5rem;
+}
+.website{
+  position:absolute;
+  height:100%;
+  width: 3.5rem;
+  background-color: white;
+  overflow:hidden;
+  border-radius:50%;
+  background-image: url('/logo.png');
+  background-size: contain;
+  left: 10rem;
+  filter:grayscale(100%);
+  opacity:0.5;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.instagram{
+  position:absolute;
+  height:100%;
+  width: 3.5rem;
+  background-color: white;
+  overflow:hidden;
+  border-radius:50%;
+  background-image: url('/instagram.png');
+  background-size: contain;
+  right: 10rem;
+  filter:grayscale(100%);
+  opacity:0.5;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+}
+.facebook{
+  position:absolute;
+  height:100%;
+  width: 3.5rem;
+  background-color: white;
+  overflow:hidden;
+  border-radius:50%;
+  background-image: url('/facebook.png');
+  background-size: contain;
+  right: 15rem;
+  filter:grayscale(100%);
+  opacity:0.5;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.youtube{
+  position:absolute;
+  height:100%;
+  width: 3.5rem;
+  background-color: white;
+  overflow:hidden;
+  border-radius:50%;
+  background-image: url('/youtube.png');
+  background-size: contain;
+  right:  20rem;
+  filter:grayscale(100%);
+  opacity:0.5;
+  border-color: white;
+  border-width: 1px;
+  border-style: solid;
+}
+.contacts div a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.youtube:hover{
+  filter:grayscale(0%);
+  opacity:1;
+}
+.facebook:hover{
+  filter:grayscale(0%);
+  opacity:1;
+}
+.instagram:hover{
+  filter:grayscale(0%);
+  opacity:1;
+}
+.website:hover{
+  filter:grayscale(0%);
+  opacity:1;
+}

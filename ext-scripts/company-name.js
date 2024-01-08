@@ -13,8 +13,8 @@ export function name(modelLoadedPromise){
                     return alphas[Math.floor( Math.random() * 26)]})
                     .join("");
                     if(iterations >= e.target.dataset.value.length) clearInterval(interval);
-                    iterations+=1/5.5;
+                    iterations+=1/5;
             });
-        },200);
+        },20);
     });
 }

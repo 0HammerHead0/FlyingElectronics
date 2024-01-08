@@ -6,7 +6,7 @@ import {syncScroll} from './ext-scripts/mouse-events.js'
 import { attachScrollListener } from './ext-scripts/scroll.js';
 import { bubbleTransition } from './ext-scripts/scrollBar.js';
 import {scrollBar} from './ext-scripts/scrollBar.js';
-import { toggleState} from './ext-scripts/toggleState.js';
+import {toggleState} from './ext-scripts/toggleState.js';
 import {name} from './ext-scripts/company-name.js';
 import {favicon} from './ext-scripts/favicon.js'; 
 // import  {scrollTrigger} from './ext-scripts/scrollTrigger.js';
@@ -14,6 +14,9 @@ import * as THREE from 'three';
 import  {gui} from './ext-scripts/gui.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
+// ktx2loader
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'; // Check the correct path
@@ -110,10 +113,16 @@ function animateProgressBar() {
 setInterval(animateProgressBar,100);// Adjust the time interval as needed
 // ----------------------------------Progress Bar END--------------------------------------------
 const gltfLoader = new GLTFLoader();
+const ktx2Loader = new KTX2Loader();
+// gltfLoader.setKTX2Loader(ktx2Loader);
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+gltfLoader.setDRACOLoader(dracoLoader);
 gltfLoader.load(
     'models/drone.glb',
     (gltf) => {
         model = gltf.scene;
+        console.log(model)
         model.rotateY(Math.PI);
         model.position.set(0,-0.2,0);
         model.scale.set(10,10,10);
@@ -203,6 +212,7 @@ gltfLoader.load(
         console.log('error', error);
     }
 );
+
 const modelLoadedPromise = new Promise((resolve) => {
     const checkModelLoaded = () => {
         if (model_loaded) {

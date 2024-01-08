@@ -26,7 +26,8 @@ dist-ssr
 # other node modules
 
 node_modules
-# public/models/drone.glb
-
+public/models/output.glb
+public/models/output2.glb
+public/models/
 
 # model files

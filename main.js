@@ -6,7 +6,7 @@ import {syncScroll} from './ext-scripts/mouse-events.js'
 import { attachScrollListener } from './ext-scripts/scroll.js';
 import { bubbleTransition } from './ext-scripts/scrollBar.js';
 import {scrollBar} from './ext-scripts/scrollBar.js';
-import { toggleState} from './ext-scripts/toggleState.js';
+import {toggleState} from './ext-scripts/toggleState.js';
 import {name} from './ext-scripts/company-name.js';
 import {favicon} from './ext-scripts/favicon.js'; 
 // import  {scrollTrigger} from './ext-scripts/scrollTrigger.js';
@@ -14,6 +14,9 @@ import * as THREE from 'three';
 import  {gui} from './ext-scripts/gui.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
+// ktx2loader
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'; // Check the correct path
@@ -76,7 +79,7 @@ var vector = new THREE.Vector3();
 var initialPose = new THREE.Vector3(0, 0, 0);
 const quaternion = new THREE.Quaternion();    
 // ----------------------------------Progress Bar--------------------------------------------
-const progressBar = (value,progress) =>{
+const progressBar = (value) =>{
     const droneElement = document.querySelector('.drone-ldBar');
     const ldBarElement = document.querySelector('.inner');
     // ldBarElement.style.transition = 'width 0.5s ease-in-out';
@@ -110,10 +113,16 @@ function animateProgressBar() {
 setInterval(animateProgressBar,100);// Adjust the time interval as needed
 // ----------------------------------Progress Bar END--------------------------------------------
 const gltfLoader = new GLTFLoader();
+const ktx2Loader = new KTX2Loader();
+// gltfLoader.setKTX2Loader(ktx2Loader);
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+gltfLoader.setDRACOLoader(dracoLoader);
 gltfLoader.load(
     'models/drone.glb',
     (gltf) => {
         model = gltf.scene;
+        console.log(model)
         model.rotateY(Math.PI);
         model.position.set(0,-0.2,0);
         model.scale.set(10,10,10);
@@ -203,6 +212,7 @@ gltfLoader.load(
         console.log('error', error);
     }
 );
+
 const modelLoadedPromise = new Promise((resolve) => {
     const checkModelLoaded = () => {
         if (model_loaded) {
@@ -564,7 +574,15 @@ function printCameraCoordinates(camera, orbitControl) {
     // Initial display of camera coordinates
     updateCoordinates();
 }
-function compName_mouseScroll_appear(){
+function page1contents_appear(){
+    const page1contents = document.querySelectorAll('.page1contents');
+    page1contents.forEach((page1content) => {
+        gsap.to(page1content, {
+            opacity: 0.5,
+            duration: 0.1,
+            ease: "power2.inOut",
+        });
+    });
     const mouseScroll = document.getElementById("mouseScroll");
     const t2 = gsap.timeline();
     const company_name = document.querySelector('.company-name');
@@ -579,7 +597,15 @@ function compName_mouseScroll_appear(){
         ease: "power2.out",
     },0);
 }
-function compName_mouseScroll_disappear(){
+function page1contents_disappear(){
+    const page1contents = document.querySelectorAll('.page1contents');
+    page1contents.forEach((page1content) => {
+        gsap.to(page1content, {
+            opacity: 0,
+            duration: 0.1,
+            ease: "power2.inOut",
+        });
+    });
     const mouseScroll = document.getElementById("mouseScroll");
     const t2 = gsap.timeline();
     const company_name = document.querySelector('.company-name');
@@ -638,7 +664,7 @@ toggleBtn.addEventListener('click', () => {
     {   
         if(globalActiveSection == 1){
             scrollToPage1();
-            compName_mouseScroll_appear();
+            page1contents_appear();
         }
         else if(globalActiveSection ==2){
             scrollToPage2();
@@ -670,7 +696,7 @@ toggleBtn.addEventListener('click', () => {
         if(globalActiveSection ==1){
             centerDrone();
             // printCameraCoordinates(camera, OrbitControl);
-            compName_mouseScroll_disappear();
+            page1contents_disappear();
         }
         else if(globalActiveSection==2){
             // printCameraCoordinates(camera, OrbitControl);
@@ -1090,47 +1116,47 @@ const observer = new IntersectionObserver((entries) => {
                 case 'page-1':
                     scrollToPage1();
                     lightUp(0);
-                    compName_mouseScroll_appear();
+                    page1contents_appear();
                     break;
                 case 'page-2':
                     scrollToPage2();
                     lightUp(1);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-3':
                     scrollToPage3();
                     lightUp(2);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-4':
                     scrollToPage4();
                     lightUp(3);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-5':
                     scrollToPage5();
                     lightUp(4);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-6':
                     scrollToPage6();
                     lightUp(5);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-7':
                     scrollToPage7();
                     lightUp(6);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-8':
                     scrollToPage8();
                     lightUp(7);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                 case 'page-9':
                     scrollToPage9();
                     lightUp(8);
-                    compName_mouseScroll_disappear();
+                    page1contents_disappear();
                     break;
                     // Add more cases for other sections as needed
                     default:

@@ -1109,7 +1109,7 @@ function scrollToPage1() {
 const sections = document.querySelectorAll('.scroll-area');
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.01) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.005) {
             const sectionId = entry.target.id;
             console.log(sectionId)
             switch (sectionId) {
@@ -1194,7 +1194,7 @@ const observer = new IntersectionObserver((entries) => {
                     }
                 }
     });
-}, { threshold: 0.01 });
+}, { threshold: 0.005 });
 
 // Select all sections
 

@@ -3,6 +3,7 @@ import './btn.css'
 import { setupPosition } from './ext-scripts/position.js'
 // import {mouseEvents} from './ext-scripts/mouse-events.js'
 import {syncScroll} from './ext-scripts/mouse-events.js'
+import { textScrollBar } from './ext-scripts/text-scrollar.js'
 import { attachScrollListener } from './ext-scripts/scroll.js';
 import { bubbleTransition } from './ext-scripts/scrollBar.js';
 import {scrollBar} from './ext-scripts/scrollBar.js';
@@ -1184,6 +1185,7 @@ function easeOut(x){
 //----------------------------------------SCROLL HANDLING----------------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
     favicon();
+    textScrollBar();
     const duration = 0.1 ;
     const tray = document.querySelector('.tray');
     const t1 = gsap.timeline();

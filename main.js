@@ -1194,22 +1194,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrollContainer = document.querySelector('.scroll-container');
         scrollContainer.addEventListener('scroll', function(e) {
             clearTimeout(scrollTimeout);
-            if(!scrollByIndex){
-                gsap.to(tray, {
-                    left: '0px',
-                    duration: duration,
-                    ease: "power2.out",
-                    onComplete: () => {
-                        scrollTimeout = setTimeout(() => {
-                            gsap.to(tray, {
-                                left: '-10%',
-                                duration: duration,
-                                ease: "power2.in",
-                            });
-                        }, 1000);
-                    }
-                });
-            }
+            // if(!scrollByIndex){
+            //     gsap.to(tray, {
+            //         left: '0px',
+            //         duration: duration,
+            //         ease: "power2.out",
+            //         onComplete: () => {
+            //             scrollTimeout = setTimeout(() => {
+            //                 gsap.to(tray, {
+            //                     left: '-10%',
+            //                     duration: duration,
+            //                     ease: "power2.in",
+            //                 });
+            //             }, 1000);
+            //         }
+            //     });
+            // }
             scrollByIndex = false;
             bubbleTransition(globalActiveSection);
         });

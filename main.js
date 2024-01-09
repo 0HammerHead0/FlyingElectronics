@@ -412,6 +412,8 @@ function createLine(vector, colorName) {
 }
 
 function translucent(keywords,sectionNum){
+    console.log(sectionNum, globalActiveSection)
+    const duration = 0.6;
     modelLoadedPromise.then(() => {
         if(keywords[0] == 'none'){
             model.traverse((child) => {
@@ -427,8 +429,8 @@ function translucent(keywords,sectionNum){
                     
                     gsap.to(clonedMaterial, {
                         opacity:1,
-                        duration: 0.8,
-                        ease: "power2.out",
+                        duration: 1,
+                        ease: "power2.inOut",
                         onUpdate:()=>{
                             if(globalActiveSection != sectionNum){
                                 gsap.killTweensOf(child.material);
@@ -466,9 +468,9 @@ function translucent(keywords,sectionNum){
                         child.castShadow = false;
                         
                         gsap.to(clonedMaterial, {
-                            opacity:0.1,
-                            duration: 0.8,
-                            ease: "power2.out",
+                            opacity:0.075,
+                            duration: duration,
+                            ease: "power2.inOut",
                             onUpdate:()=>{
                                 if(globalActiveSection != sectionNum){
                                     gsap.killTweensOf(child.material);
@@ -489,8 +491,8 @@ function translucent(keywords,sectionNum){
         opaqueMaterials.forEach((clonedMaterial) => {
             gsap.to(clonedMaterial[0], {
                 opacity:1,
-                duration: 0.8,
-                ease: "power2.out",
+                duration: duration,
+                ease: "power2.inOut",
                 onUpdate:()=>{
                     if(globalActiveSection != sectionNum){
                         gsap.killTweensOf(child.material);
@@ -499,14 +501,13 @@ function translucent(keywords,sectionNum){
                 }
             })
         });
-        console.log(keywords)
         if(keywords[1]=='antenna'){
             console.log('updating antenna material')
             const timeline = gsap.timeline();
             timeline.to(model.children[14].children[0].material,{
                 opacity:1,
-                duration:0.8,
-                ease:"power2.out",
+                duration:duration,
+                ease:"power2.inOut",
                 onUpdate:()=>{
                     if(globalActiveSection != sectionNum){
                         gsap.killTweensOf(child.material);
@@ -516,8 +517,8 @@ function translucent(keywords,sectionNum){
             })
             timeline.to(model.children[14].children[1].material,{
                 opacity:1,
-                duration:0.8,
-                ease:"power2.out",
+                duration:duration,
+                ease:"power2.inOut",
                 onUpdate:()=>{
                     if(globalActiveSection != sectionNum){
                         gsap.killTweensOf(child.material);
@@ -930,8 +931,7 @@ function scrollToPage5(){
         z:-0.16,
         duration: 0.7,
         ease: "power2.inOut",
-        },0
-    )
+    },0)
     //Model Position - x: -0.47, y: 0.10, z: 0.00
     moveAndRotate.to(model.position,{
         x:-0.47,
@@ -973,8 +973,7 @@ function scrollToPage4(){
         z:-0.14,
         duration: 0.7,
         ease: "power2.inOut",
-        },0
-    )
+    },0)
     //Model Position - x: -0.47, y: 0.10, z: 0.00
     moveAndRotate.to(model.position,{
         x:-0.47,
@@ -999,7 +998,7 @@ function scrollToPage3(){
         intensity: 150,
         duration: 0.6,
         ease:"power2.inOut"
-    },0.1)
+    },0)
     moveAndRotate.to(camera.position, {
         x:-0.16,
         y:0.29,
@@ -1020,8 +1019,8 @@ function scrollToPage3(){
         z:-0.17,
         duration: 1,
         ease: "power2.inOut",
-        },0
-    )
+        
+    },0)
     moveAndRotate.to(model.position,{
         x:-0.47,
         y:0.1,
@@ -1042,34 +1041,35 @@ function scrollToPage2() {
         z: 0.45,
         duration: 0.6,
         ease: "power2.inOut",
-        onComplete:translucent(['frame','none'],2),
-    },0.1)
+        // onComplete:translucent(['frame','none'],2),
+    },0)
     .to(OrbitControl.target, {
         x:0.5,
         y:0,
         z:0,
         duration: 0.6,
         ease: "power2.inOut",
-    },0.1)
+    },0)
     .to(model.position,{
         x:0,
         y:0.1,
         z:0,
         duration:0.6,
         ease:"power2.inOut",
-    },0.1)
+    },0)
     .to(camera.rotation,{
         x : -0.418,
         y: -1.0189,
         z: -0.3617,
         duration:0.6,
         ease:"power2.inOut",
-    },0.1)
+    },0)
     .to(bottomLight,{
         intensity: 150,
         duration: 0.6,
         ease:"power2.inOut"
     },0.1)
+    moveAndRotate.add(translucent(['frame','none'],2),0);
     
 }
 function scrollToPage1() {
@@ -1102,62 +1102,91 @@ function scrollToPage1() {
         duration: 0.6,
         ease:"power2.inOut"
     },0.1)
-    moveAndRotate.add(translucent(['none'],1),0.15);
-
-    moveAndRotate.add(animateDrone(),0.15);
-    moveAndRotate.add(rotateProps(),0.15);
+    moveAndRotate.add(translucent(['none'],1),0);
+    moveAndRotate.add(animateDrone(),0.2);
+    moveAndRotate.add(rotateProps(),0.3);
 }
 const sections = document.querySelectorAll('.scroll-area');
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.01) {
             const sectionId = entry.target.id;
             console.log(sectionId)
             switch (sectionId) {
                 case 'page-1':
-                    scrollToPage1();
-                    lightUp(0);
-                    page1contents_appear();
+                    const t1 = gsap.timeline();
+                    t1.add(scrollToPage1(),0);
+                    t1.add(lightUp(0),0);
+                    t1.add(page1contents_appear(),0);
+                    t1.play();
                     break;
                 case 'page-2':
-                    scrollToPage2();
-                    lightUp(1);
-                    page1contents_disappear();
+                    const t2 = gsap.timeline();
+                    t2.add(scrollToPage2(),0);
+                    t2.add(lightUp(1),0);
+                    t2.add(page1contents_disappear(),0);
+                    t2.play();
                     break;
                 case 'page-3':
-                    scrollToPage3();
-                    lightUp(2);
-                    page1contents_disappear();
+                    const t3 = gsap.timeline();
+                    t3.add(scrollToPage3(),0);
+                    t3.add(lightUp(2),0);
+                    t3.add(page1contents_disappear(),0);
+                    t3.play();
                     break;
                 case 'page-4':
-                    scrollToPage4();
-                    lightUp(3);
-                    page1contents_disappear();
+                    const t4 = gsap.timeline();
+                    t4.add(scrollToPage4(),0);
+                    t4.add(lightUp(3),0);
+                    t4.add(page1contents_disappear(),0);
+                    t4.play();
                     break;
                 case 'page-5':
-                    scrollToPage5();
-                    lightUp(4);
-                    page1contents_disappear();
+                    const t5 = gsap.timeline();
+                    t5.add(scrollToPage5(),0);
+                    t5.add(lightUp(4),0);
+                    t5.add(page1contents_disappear(),0);
+                    t5.play();
                     break;
                 case 'page-6':
-                    scrollToPage6();
-                    lightUp(5);
-                    page1contents_disappear();
+                    // scrollToPage6();
+                    // lightUp(5);
+                    // page1contents_disappear();
+                    const t6 = gsap.timeline();
+                    t6.add(scrollToPage6(),0);
+                    t6.add(lightUp(5),0);
+                    t6.add(page1contents_disappear(),0);
+                    t6.play();
                     break;
                 case 'page-7':
-                    scrollToPage7();
-                    lightUp(6);
-                    page1contents_disappear();
+                    // scrollToPage7();
+                    // lightUp(6);
+                    // page1contents_disappear();
+                    const t7 = gsap.timeline();
+                    t7.add(scrollToPage7(),0);
+                    t7.add(lightUp(6),0);
+                    t7.add(page1contents_disappear(),0);
+                    t7.play();
                     break;
                 case 'page-8':
-                    scrollToPage8();
-                    lightUp(7);
-                    page1contents_disappear();
+                    // scrollToPage8();
+                    // lightUp(7);
+                    // page1contents_disappear();
+                    const t8 = gsap.timeline();
+                    t8.add(scrollToPage8(),0);
+                    t8.add(lightUp(7),0);
+                    t8.add(page1contents_disappear(),0);
+                    t8.play();
                     break;
                 case 'page-9':
-                    scrollToPage9();
-                    lightUp(8);
-                    page1contents_disappear();
+                    // scrollToPage9();
+                    // lightUp(8);
+                    // page1contents_disappear();
+                    const t9 = gsap.timeline();
+                    t9.add(scrollToPage9(),0);
+                    t9.add(lightUp(8),0);
+                    t9.add(page1contents_disappear(),0);
+                    t9.play();
                     break;
                     // Add more cases for other sections as needed
                     default:
@@ -1165,7 +1194,7 @@ const observer = new IntersectionObserver((entries) => {
                     }
                 }
     });
-}, { threshold: 0.5 });
+}, { threshold: 0.01 });
 
 // Select all sections
 
@@ -1194,22 +1223,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrollContainer = document.querySelector('.scroll-container');
         scrollContainer.addEventListener('scroll', function(e) {
             clearTimeout(scrollTimeout);
-            // if(!scrollByIndex){
-            //     gsap.to(tray, {
-            //         left: '0px',
-            //         duration: duration,
-            //         ease: "power2.out",
-            //         onComplete: () => {
-            //             scrollTimeout = setTimeout(() => {
-            //                 gsap.to(tray, {
-            //                     left: '-10%',
-            //                     duration: duration,
-            //                     ease: "power2.in",
-            //                 });
-            //             }, 1000);
-            //         }
-            //     });
-            // }
+            if(!scrollByIndex){
+                gsap.to(tray, {
+                    left: '0px',
+                    duration: duration,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        scrollTimeout = setTimeout(() => {
+                            gsap.to(tray, {
+                                left: '-10%',
+                                duration: duration,
+                                ease: "power2.in",
+                            });
+                        }, 1000);
+                    }
+                });
+            }
             scrollByIndex = false;
             bubbleTransition(globalActiveSection);
         });
@@ -1312,8 +1341,8 @@ function scrollTrigger(){
         ScrollTrigger.create({
             trigger: section,
             scroller: container,
-            start: "top center",
-            end: "bottom center",
+            start: "top bottom",
+            // end: "bottom 1%",
             // scrub:true,
             toggleClass: {
                 targets: section,

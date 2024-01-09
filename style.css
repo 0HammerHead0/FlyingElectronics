@@ -296,12 +296,10 @@ body {
 .textScrollBar-thumb{
   position: absolute;
   background-color:#b9e1ff88;
-  /* height: 5rem; */
   width: 100%;
   right: 0;
   border-radius: 10px;
-  /*  shadow  */
-  box-shadow: 0 0 15px 2px rgb(0, 0, 0);
+  box-shadow: 0 0 15px 5px rgb(0, 0, 0);
   
 }
 /* ----------------BG-------------------- */

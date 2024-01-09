@@ -1184,8 +1184,8 @@ function easeOut(x){
 
 //----------------------------------------SCROLL HANDLING----------------------------------------------
 document.addEventListener('DOMContentLoaded', function() {
-    favicon();
     textScrollBar();
+    favicon();
     const duration = 0.1 ;
     const tray = document.querySelector('.tray');
     const t1 = gsap.timeline();

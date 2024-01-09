@@ -115,9 +115,6 @@ setInterval(animateProgressBar,100);// Adjust the time interval as needed
 // ----------------------------------Progress Bar END--------------------------------------------
 const gltfLoader = new GLTFLoader();
 const ktx2Loader = new KTX2Loader();
-// gltfLoader.setKTX2Loader(ktx2Loader);
-// ktx2Loader.setTranscoderPath( 'three/examples/jsm/libs/basis' );
-// ktx2Loader.detectSupport( renderer );
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 gltfLoader.setDRACOLoader(dracoLoader);

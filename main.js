@@ -116,11 +116,13 @@ setInterval(animateProgressBar,100);// Adjust the time interval as needed
 const gltfLoader = new GLTFLoader();
 const ktx2Loader = new KTX2Loader();
 // gltfLoader.setKTX2Loader(ktx2Loader);
+// ktx2Loader.setTranscoderPath( 'three/examples/jsm/libs/basis' );
+// ktx2Loader.detectSupport( renderer );
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
 gltfLoader.setDRACOLoader(dracoLoader);
 gltfLoader.load(
-    'models/drone.glb',
+    'models/test2.glb',
     (gltf) => {
         model = gltf.scene;
         console.log(model)
@@ -658,6 +660,45 @@ function centerDrone(){
         ease:"power2.inOut",
     },0.1)
 }
+function textAppear(ind){
+    let pagecontents = document.getElementById('page'+String(ind)+'scroll');
+    let pageheading = document.getElementById('page'+String(ind)+'heading');
+    let scrollBar = document.getElementById('scrollBar-page'+String(ind));
+    // create a timeline and make opacity one for the above three
+    const timeline = gsap.timeline();
+    timeline.to(pagecontents,{
+        opacity:1,
+        duration:0.15,
+        ease:"power2.inOut",
+    },0).to(pageheading,{
+        opacity:1,
+        duration:0.15,
+        ease:"power2.inOut",
+    },0).to(scrollBar,{
+        opacity:1,
+        duration:0.15,
+        ease:"power2.inOut",
+    },0);
+}
+function textDisappear(ind){
+    let pagecontents = document.getElementById('page'+String(ind)+'scroll');
+    let pageheading = document.getElementById('page'+String(ind)+'heading');
+    let scrollBar = document.getElementById('scrollBar-page'+String(ind));
+    const timeline = gsap.timeline();
+    timeline.to(pagecontents,{
+        opacity:0,
+        duration:0.15,
+        ease:"power2.inOut",
+    },0).to(pageheading,{
+        opacity:0,
+        duration:0.15,
+        ease:"power2.inOut",
+    },0).to(scrollBar,{
+        opacity:0,
+        duration:0.15,
+        ease:"power2.inOut",
+    },0);
+}
 const toggleBtn = document.getElementById('btn');
 toggleBtn.addEventListener('click', () => {
     animationFlag = !animationFlag;
@@ -670,27 +711,35 @@ toggleBtn.addEventListener('click', () => {
         }
         else if(globalActiveSection ==2){
             scrollToPage2();
+            textAppear(2);
         }
         else if(globalActiveSection == 3){
             scrollToPage3();
+            textAppear(3);
         }
         else if(globalActiveSection == 4){
             scrollToPage4();
+            textAppear(4);
         }
         else if(globalActiveSection == 5){
             scrollToPage5();
+            textAppear(5);
         }
         else if(globalActiveSection == 6){
             scrollToPage6();
+            textAppear(6);
         }
         else if(globalActiveSection == 7){
             scrollToPage7();
+            textAppear(7);
         }
         else if(globalActiveSection == 8){
             scrollToPage8();
+            textAppear(8);
         }
         else if(globalActiveSection == 9){
             scrollToPage9();
+            textAppear(9);
         }
 
     }
@@ -702,29 +751,36 @@ toggleBtn.addEventListener('click', () => {
         }
         else if(globalActiveSection==2){
             // printCameraCoordinates(camera, OrbitControl);
+            textDisappear(2);
         }
         else if(globalActiveSection==3){
             // printCameraCoordinates(camera, OrbitControl);
+            textDisappear(3);
         }
         else if(globalActiveSection==4){
             // printCameraCoordinates(camera, OrbitControl);
+            textDisappear(4);
         }
         else if(globalActiveSection==5){
             centerDrone();
-            
+            textDisappear(5);
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==6){
+            textDisappear(6);
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==7){
+            textDisappear(7);
             centerDrone();
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==8){
+            textDisappear(8);
             // printCameraCoordinates(camera, OrbitControl);
         }
         else if(globalActiveSection==9){
+            textDisappear(9);
             // printCameraCoordinates(camera, OrbitControl);
         }
     }

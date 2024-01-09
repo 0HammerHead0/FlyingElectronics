@@ -7,13 +7,14 @@ export function name(modelLoadedPromise){
             let iterations = 0;
             const interval = setInterval(()=> {
                 e.target.innerText = e.target.innerText.split("").map((alpha,index) => {
+                    if(index == 6) return " ";
                     if(index< iterations){
                         return e.target.dataset.value[index];
                     }
                     return alphas[Math.floor( Math.random() * 26)]})
                     .join("");
                     if(iterations >= e.target.dataset.value.length) clearInterval(interval);
-                    iterations+=1/5;
+                    iterations+=1/2;
             });
         },20);
     });
